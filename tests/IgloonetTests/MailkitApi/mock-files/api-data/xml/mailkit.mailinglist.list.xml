@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <struct>
+                                <member>
+                                    <name>NAME</name>
+                                    <value>
+                                        <string>Jméno seznamu příjemců</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>ID_USER_LIST</name>
+                                    <value>
+                                        <i4>12345</i4>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>STATUS</name>
+                                    <value>
+                                        <string>enabled</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>DESCRIPTION</name>
+                                    <value>
+                                        <string>Popis seznamu příjemců</string>
+                                    </value>
+                                </member>
+                            </struct>
+                        </value>
+                    </data>
+                </array>
+            </value>
+        </param>
+    </params>
+</methodResponse>

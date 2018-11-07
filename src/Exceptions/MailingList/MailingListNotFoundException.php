@@ -1,0 +1,8 @@
+<?php
+declare(strict_types=1);
+
+namespace Igloonet\MailkitApi\Exceptions\MailingList;
+
+class MailingListNotFoundException extends \RuntimeException implements MailingListException
+{
+}

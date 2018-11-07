@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string>Email has been revalidated</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>

@@ -1,0 +1,14 @@
+[
+  {
+    "NAME":"Testovací seznam",
+    "ID_USER_LIST":"123456",
+    "STATUS":"enabled",
+    "DESCRIPTION":"popis seznamu"
+  },
+  {
+    "NAME":"Druhý seznam",
+    "ID_USER_LIST":"123457",
+    "STATUS":"disabled",
+    "DESCRIPTION":""
+  }
+]

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>data</name>
+                        <value>
+                            <i4>12345678</i4>
+                        </value>
+                    </member>
+                    <member>
+                        <name>data2</name>
+                        <value>
+                            <i4>12345</i4>
+                        </value>
+                    </member>
+                    <member>
+                        <name>data3</name>
+                        <value>
+                            <i4>12345678</i4>
+                        </value>
+                    </member>
+                    <member>
+                        <name>status</name>
+                        <value>
+                            <i4>0</i4>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+    </params>
+</methodResponse>

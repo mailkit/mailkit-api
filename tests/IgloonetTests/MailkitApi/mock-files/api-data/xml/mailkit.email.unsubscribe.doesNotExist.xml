@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string>Invalid ID_email or email</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>
