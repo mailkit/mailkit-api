@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Igloonet\MailkitApi\DataObjects\Enums;
 
-
 class UnsubscribeMethod extends \Consistence\Enum\Enum
 {
 	const LINK_IN_MAIL = 'link_in_mail';

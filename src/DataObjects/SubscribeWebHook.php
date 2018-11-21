@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace Igloonet\MailkitApi\DataObjects;
-
 
 use Igloonet\MailkitApi\DataObjects\Enums\Gender;
 use Nette\Utils\DateTime;
