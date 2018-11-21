@@ -41,7 +41,7 @@ class UnsubscribeWebHook
 	/** @var string|null */
 	private $timeout = null;
 
-	/** @var string|null */
+	/** @var DateTime|null */
 	private $expire = null;
 
 	/** @var UnsubscribeMethod|null */
@@ -176,9 +176,9 @@ class UnsubscribeWebHook
 	}
 
 	/**
-	 * @return null|string
+	 * @return null|DateTime
 	 */
-	public function getExpire(): ?string
+	public function getExpire(): ?DateTime
 	{
 		return $this->expire;
 	}
