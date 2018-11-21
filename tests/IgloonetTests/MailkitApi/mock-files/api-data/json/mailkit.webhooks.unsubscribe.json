@@ -1,0 +1,17 @@
+{
+  "EMAIL":"fejjo@igloonet.cz",
+  "ID_EMAIL":"1",
+  "DATE":"2018-11-01 11:11:11",
+  "IP":"192.168.100.100",
+  "IP_ORIG":"192.168.100.100",
+  "ID_ML":"12324",
+  "ID_SEND":"12324",
+  "ID_MESSAGE":"12324",
+  "ID_TOPIC_ACTIVE":"12324",
+  "ID_TOPIC_INACTIVE":"12324",
+  "TIMEOUT":"3",
+  "EXPIRE":"2018-12-01 11:11:11",
+  "METHOD":"api_unsubscribe",
+  "UNSUBSCRIBE_ANSWER":"",
+  "UNSUBSCRIBE_NOTE":""
+}
