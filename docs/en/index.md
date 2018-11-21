@@ -42,5 +42,14 @@ $result = $messagesManager->sendMail($message, $mailingList->getId(), $campaignI
 
 var_dump($result);
 
+//WebHook manager 
+$webHookManager = new \Igloonet\MailkitApi\Managers\WebHooksManager();
 
+//WebHook subscribe
+$jsonPayloadFromWebHook = '{EMAIL":"example@example.cz", "ID_EMAIL":"1", .......... }'; //Webhook payload
+$subscribeValueObject = $webHookManager->processSubscribe($jsonPayloadFromWebHook);
+
+//WebHook unsubscribe
+$jsonPayloadFromWebHook = '{EMAIL":"example@example.cz", "ID_EMAIL":"1", .......... }'; //Webhook payload
+$unsubscribeValueObject = $webHookManager->processUnsubscribe($jsonPayloadFromWebHook);
 ```
