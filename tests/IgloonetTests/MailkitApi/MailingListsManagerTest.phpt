@@ -3,7 +3,10 @@ namespace IgloonetTests\MailkitApi;
 
 use Igloonet\MailkitApi\DataObjects\Enums\MailingListStatus;
 use Igloonet\MailkitApi\DataObjects\MailingList;
+use Igloonet\MailkitApi\Exceptions\MailingList\MailingListExistsException;
+use Igloonet\MailkitApi\Exceptions\MailingList\MailingListMissingNameException;
 use Igloonet\MailkitApi\Managers\MailingListsManager;
+use Igloonet\MailkitApi\RPC\Exceptions\RpcRequestFailedException;
 use Tester\Assert;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -25,11 +28,12 @@ class MailingListsManagerTest extends MailkitTestCase
 		$results = $this->mailingListManager->getMailingLists();
 
 		/** @var MailingList $result */
-		foreach ($results as $result)
-		Assert::same('Jméno seznamu příjemců', $result->getName());
-		Assert::same(12345, $result->getId());
-		Assert::same(MailingListStatus::STATUS_ENABLED, $result->getStatus()->getValue());
-		Assert::same('Popis seznamu příjemců', $result->getDescription());
+		foreach ($results as $result) {
+			Assert::same('Jméno seznamu příjemců', $result->getName());
+			Assert::same(12345, $result->getId());
+			Assert::same(MailingListStatus::STATUS_ENABLED, $result->getStatus()->getValue());
+			Assert::same('Popis seznamu příjemců', $result->getDescription());
+		}
 	}
 
 	public function testCreateMailingList()
@@ -38,6 +42,22 @@ class MailingListsManagerTest extends MailkitTestCase
 		$result = $this->mailingListManager->createMailingList('mailingList');
 
 		Assert::same(12345, $result->getId());
+	}
+
+	public function testCreateMissingNameMailingList()
+	{
+		/** @var MailingList $result */
+		Assert::exception(function() {
+			$this->mailingListManager->createMailingList('missingName');
+		}, MailingListMissingNameException::class);
+	}
+
+	public function testCreateExistMailingList()
+	{
+		/** @var MailingList $result */
+		Assert::exception(function() {
+			$this->mailingListManager->createMailingList('exist');
+		}, MailingListExistsException::class);
 	}
 
 	public function testFlushMailingList()
@@ -52,6 +72,13 @@ class MailingListsManagerTest extends MailkitTestCase
 		$result = $this->mailingListManager->deleteMailingList(12345);
 
 		Assert::true($result);
+	}
+
+	public function testDeleteMissingMailingList()
+	{
+		Assert::exception(function() {
+			$this->mailingListManager->deleteMailingList(00000);
+		}, RpcRequestFailedException::class);
 	}
 
 	public function testDeleteMailingListByName()

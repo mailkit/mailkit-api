@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <methodResponse>
     <params>
-        <param>
-            <value>
-                <struct>
-                    <member>
-                        <name>data</name>
-                        <value>
-                            <string>OK</string>
-                        </value>
-                    </member>
-                </struct>
-            </value>
-        </param>
+        <param><value><string>OK</string></value></param>
     </params>
 </methodResponse>

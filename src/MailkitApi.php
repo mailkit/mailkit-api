@@ -6,6 +6,7 @@ namespace Igloonet\MailkitApi;
 use Igloonet\MailkitApi\Managers\MessagesManager;
 use Igloonet\MailkitApi\Managers\UsersManager;
 use Igloonet\MailkitApi\Managers\MailingListsManager;
+use Igloonet\MailkitApi\Managers\WebHooksManager;
 
 class MailkitApi
 {
@@ -18,14 +19,19 @@ class MailkitApi
 	/** @var MessagesManager */
 	private $messagesManager = null;
 
+	/** @var WebHooksManager */
+	private $webHooksManager = null;
+
 	public function __construct(
 		MailingListsManager $mailingListsManager,
 		UsersManager $usersManager,
-		MessagesManager $messagesManager
+		MessagesManager $messagesManager,
+		WebHooksManager $webHooksManager
 	) {
 		$this->mailingListsManager = $mailingListsManager;
 		$this->usersManager = $usersManager;
 		$this->messagesManager = $messagesManager;
+		$this->webHooksManager = $webHooksManager;
 	}
 
 	/**
@@ -50,5 +56,13 @@ class MailkitApi
 	public function getMessagesManager(): MessagesManager
 	{
 		return $this->messagesManager;
+	}
+
+	/**
+	 * @return WebHooksManager
+	 */
+	public function getWebHooksManager(): WebHooksManager
+	{
+		return $this->webHooksManager;
 	}
 }

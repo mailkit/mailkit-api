@@ -15,6 +15,5 @@ class MailkitTestCase extends Tester\TestCase
 		parent::setUp();
 
 		$this->client = new ClientMock();
-
 	}
 }

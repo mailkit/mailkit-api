@@ -9,6 +9,7 @@ cache:
 php:
   - 7.1
   - 7.2
+  - 7.3
 
 matrix:
   include:
@@ -16,10 +17,14 @@ matrix:
     env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
   - php: 7.2
     env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+  - php: 7.3
+    env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
   allow_failures:
   - php: 7.1
     env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
-  - php: 7.2
+  - php: 7.3
+    env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+  - php: 7.3
     env: COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
 
 before_install:

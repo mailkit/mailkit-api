@@ -38,7 +38,6 @@ class WebHooksManagerTest extends MailkitTestCase
 		for ($i = 1; $i <= User::CUSTOM_FIELDS_CNT; $i++) {
 			Assert::same('CUSTOM'.$i, $response->getUser()->getCustomField($i));
 		}
-
 	}
 
 	public function testResponseProcessUnsubscribe()
@@ -53,7 +52,13 @@ class WebHooksManagerTest extends MailkitTestCase
 		Assert::same(UnsubscribeMethod::get('api_unsubscribe'), $response->getMethod());
 	}
 
-
+	public function testResponseBadIpProcessSubscribe()
+	{
+		$file = file_get_contents(__DIR__ . '/mock-files/api-data/json/mailkit.webhooks.badIpsubscribe.json', false);
+		/** @var SubscribeWebHook $response */
+		$response = $this->webHooksManager->processSubscribe($file);
+		Assert::same(null, $response->getIp());
+	}
 }
 
 (new WebHooksManagerTest)->run();

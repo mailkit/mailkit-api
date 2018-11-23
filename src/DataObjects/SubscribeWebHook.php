@@ -47,9 +47,6 @@ class SubscribeWebHook
 	/** @var string|null */
 	private $urlCode = null;
 
-	/** @var array|string[] */
-	private $customFields = [];
-
 	/** $jsonContent */
 	private $jsonContent = null;
 
@@ -65,17 +62,21 @@ class SubscribeWebHook
 
 		$subscribe->user = $user;
 		$subscribe->emailId = self::validateEmptyString($jsonContent['ID_EMAIL']);
-		$subscribe->date = new DateTime($jsonContent['DATE']);
 		$subscribe->ip = self::validateIp($jsonContent['IP']);
 		$subscribe->ipOrig = self::validateIp($jsonContent['IP_ORIG']);
 		$subscribe->mailingListId = self::validateEmptyString($jsonContent['ID_ML']);
 		$subscribe->channel = self::validateEmptyString($jsonContent['CHANNEL']);
 		$subscribe->userAgentString =self::validateEmptyString($jsonContent['UA']);
-		$subscribe->dateRequest = new DateTime($jsonContent['DATE_REQUEST']);
 		$subscribe->userAgentRequest = self::validateEmptyString($jsonContent['UA_REQUEST']);
 		$subscribe->ipRequest = self::validateIp($jsonContent['IP_REQUEST']);
 		$subscribe->ipOrigRequest = self::validateIp($jsonContent['IP_ORIG_REQUEST']);
 		$subscribe->urlCode = self::validateEmptyString($jsonContent['URL_CODE']);
+
+		try {
+			$subscribe->date = new DateTime($jsonContent['DATE']);
+			$subscribe->dateRequest = new DateTime($jsonContent['DATE_REQUEST']);
+		} catch (\Exception $e) {
+		}
 
 		return $subscribe;
 	}

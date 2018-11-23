@@ -426,7 +426,7 @@ class UsersManager extends BaseManager
 			}
 		}
 
-		$message = trim($rpcResponse->getStringData());
+		$message = trim($rpcResponse->getStringValue());
 
 		if ($message === 'OK') {
 			return true;

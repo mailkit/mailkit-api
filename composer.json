@@ -22,7 +22,8 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^0.10.5",
-    "nette/tester": "^2.1"
+    "nette/tester": "^2.1",
+    "tracy/tracy": "^2.5"
   },
   "autoload": {
     "psr-4": {

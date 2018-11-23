@@ -15,25 +15,55 @@ class MessagesManagerTest extends MailkitTestCase
 	/** MessagesManager $messagesManager*/
 	private $messagesManager;
 
+	private $user;
+	private $message;
+
 	protected function setUp()
 	{
 		parent::setUp();
 		$this->messagesManager = new MessagesManager($this->client, ['cs'], 'cs');
-	}
-	public function testOne()
-	{
-		$user = new User();
-		$message = new Message($user);
 
+		$this->user = $user= new User();
+		$this->message = new Message($user);
+	}
+
+	public function testSendMail()
+	{
 		/** @var SendMailResult $result */
-		$result = $this->messagesManager->sendMail($message, 12345, 1);
+		$result = $this->messagesManager->sendMail($this->message, 12345, 1);
 
 		Assert::same(12345678, $result->getEmailId());
 		Assert::same(12345, $result->getSendingId());
 		Assert::same(12345678, $result->getMessageId());
-//		Assert::same(0, $result->getStatus());
 	}
 
+	public function testMissingSendTo()
+	{
+		Assert::exception(function() {
+			$this->messagesManager->sendMail($this->message, 54321, 1);
+		}, \Igloonet\MailkitApi\Exceptions\Message\MessageSendMissingSendToException::class);
+	}
+
+	public function testInvalidIdMessages()
+	{
+		Assert::exception(function() {
+			$this->messagesManager->sendMail($this->message, 1, 1);
+		}, \Igloonet\MailkitApi\Exceptions\Message\MessageSendInvalidCampaignIdException::class);
+	}
+
+	public function testInvalidIdMailingList()
+	{
+		Assert::exception(function() {
+			$this->messagesManager->sendMail($this->message, 2, 1);
+		}, \Igloonet\MailkitApi\Exceptions\Message\MessageSendInvalidMailingListIdException::class);
+	}
+
+	public function testAttachmentNotAllowed()
+	{
+		Assert::exception(function() {
+			$this->messagesManager->sendMail($this->message, 3, 1);
+		}, \Igloonet\MailkitApi\Exceptions\Message\MessageSendAttachmentNotAllowedException::class);
+	}
 }
 
 (new MessagesManagerTest)->run();

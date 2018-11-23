@@ -30,9 +30,10 @@ class Client
 	 */
 	public function sendRpcRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
-		if ($this->jsonAdapter->supportsMethod($method)) {
+		//@todo finish when mailkit finished JSON support
+//		if ($this->jsonAdapter->supportsMethod($method)) {
 //			return $this->jsonAdapter->sendRequest($method, $params, $possibleErrors);
-		}
+//		}
 
 		return $this->xmlAdapter->sendRequest($method, $params, $possibleErrors);
 	}

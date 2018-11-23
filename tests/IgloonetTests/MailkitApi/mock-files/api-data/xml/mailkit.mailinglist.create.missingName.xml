@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string>Missing name of mailing list</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>
