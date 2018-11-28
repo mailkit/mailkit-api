@@ -195,7 +195,12 @@ class UsersManager extends BaseManager
 			}
 		}
 
-		return $rpcResponse->getIntegerValue();
+		// Mailkit API returns e-mail ID if user exists in database, or e-mail address if user does not exists
+		try {
+			return (string)$rpcResponse->getIntegerValue();
+		} catch (InvalidDataTypeException $ex) {
+			return $rpcResponse->getStringValue();
+		}
 	}
 
 	/**
