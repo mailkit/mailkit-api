@@ -14,7 +14,7 @@ use Igloonet\MailkitApi\Exceptions\Message\MessageSendMissingSenderAddressExcept
 use Igloonet\MailkitApi\Exceptions\Message\MessageSendMissingSendToException;
 use Igloonet\MailkitApi\Results\SendMailResult;
 
-class MessagesManager extends BaseManager
+class MessagesManager extends BaseManager implements IMessageManager
 {
 	/**
 	 * @param Message $message
@@ -36,12 +36,11 @@ class MessagesManager extends BaseManager
 
 		$deliveryParams = $this->filterNullsFromArray($deliveryParams);
 
-		$templateVars = array_map(
-			function (string $value) {
-				return $this->encodeString($value);
-			},
-			$message->getTemplateVars()
-		);
+		$templateVars = $message->getTemplateVars();
+
+		array_walk_recursive($templateVars, function(&$item, $key){
+			$item = $this->encodeString((string) $item);
+		});
 
 		if (count($templateVars) > 0) {
 			$deliveryParams['content'] = $templateVars;

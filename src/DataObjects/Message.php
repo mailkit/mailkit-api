@@ -97,10 +97,10 @@ class Message
 
 	/**
 	 * @param string $varName
-	 * @param string $value
+	 * @param mixed $value
 	 * @return $this
 	 */
-	public function setTemplateVar(string $varName, string $value): self
+	public function setTemplateVar(string $varName, $value): self
 	{
 		$this->templateVars[$varName] = $value;
 
