@@ -41,15 +41,16 @@ class Attachment
 		}
 
 		if ($this->filePath !== null) {
-			if (!file_exists($this->filePath)) {
+			$resolvedPath = realpath($this->filePath);
+			if ($resolvedPath === false || !is_file($resolvedPath)) {
 				throw new AttachmentFileNotFoundException($this->filePath);
 			}
 
-			if (!is_readable($this->filePath)) {
+			if (!is_readable($resolvedPath)) {
 				throw new AttachmentFileNotReadableException($this->filePath);
 			}
 
-			$fileContent = file_get_contents($this->filePath);
+			$fileContent = file_get_contents($resolvedPath);
 
 			if ($fileContent !== false) {
 				return $fileContent;

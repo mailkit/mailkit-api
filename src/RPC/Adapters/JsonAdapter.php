@@ -116,7 +116,10 @@ class JsonAdapter implements IAdapter
 			if ($error === $possibleError) {
 				return true;
 			}
-			if (@preg_match($possibleError, $error) === 1) {
+			// Only try regex match if the string starts with a valid PCRE delimiter
+			// (non-alphanumeric, non-backslash, non-NUL) to avoid E_WARNING on plain strings
+			if (preg_match('{^[^a-zA-Z0-9\\\\\x00].}', $possibleError)
+				&& preg_match($possibleError, $error) === 1) {
 				return true;
 			}
 		}
@@ -140,7 +143,11 @@ class JsonAdapter implements IAdapter
 				'method' => 'POST',
 				'header' => 'Content-Type: application/json',
 				'content' => Json::encode($data)
-			]
+			],
+			'ssl' => [
+				'verify_peer' => true,
+				'verify_peer_name' => true,
+			],
 		];
 	}
 

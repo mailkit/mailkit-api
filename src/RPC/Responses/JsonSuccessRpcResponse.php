@@ -49,7 +49,7 @@ class JsonSuccessRpcResponse extends SuccessRpcResponse
 		if (!isset($this->data['data']) || !is_array($this->data['data'])) {
 			throw new InvalidDataTypeException(sprintf(
 				'Unable to extract array data from response %s',
-				print_r($this->data, true)
+				implode(', ', array_keys($this->data))
 			));
 		}
 
@@ -66,7 +66,7 @@ class JsonSuccessRpcResponse extends SuccessRpcResponse
 		if (!isset($this->data['data']) || !is_string($this->data['data'])) {
 			throw new InvalidDataTypeException(sprintf(
 				'Unable to extract string data from response %s',
-				print_r($this->data, true)
+				implode(', ', array_keys($this->data))
 			));
 		}
 
@@ -82,7 +82,7 @@ class JsonSuccessRpcResponse extends SuccessRpcResponse
 		if (!isset($this->data['data']) || !is_string($this->data['data'])) {
 			throw new InvalidDataTypeException(sprintf(
 				'Unable to extract integer data from response %s',
-				print_r($this->data, true)
+				implode(', ', array_keys($this->data))
 			));
 		}
 
@@ -98,7 +98,7 @@ class JsonSuccessRpcResponse extends SuccessRpcResponse
 		if (!isset($this->data['data']) || !is_bool($this->data['data'])) {
 			throw new InvalidDataTypeException(sprintf(
 				'Unable to extract boolean data from response %s',
-				print_r($this->data, true)
+				implode(', ', array_keys($this->data))
 			));
 		}
 

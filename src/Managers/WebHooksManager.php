@@ -18,6 +18,7 @@ class WebHooksManager
 
 			return $subscribe;
 		} catch (JsonException $e) {
+			throw $e;
 		}
 
 		return null;
@@ -31,6 +32,7 @@ class WebHooksManager
 
 			return $unsubscribe;
 		} catch (JsonException $e) {
+			throw $e;
 		}
 
 		return null;
