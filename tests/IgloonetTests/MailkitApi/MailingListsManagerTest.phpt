@@ -31,7 +31,7 @@ class MailingListsManagerTest extends MailkitTestCase
 		foreach ($results as $result) {
 			Assert::same('Jméno seznamu příjemců', $result->getName());
 			Assert::same(12345, $result->getId());
-			Assert::same(MailingListStatus::STATUS_ENABLED, $result->getStatus()->getValue());
+			Assert::same(MailingListStatus::STATUS_ENABLED, $result->getStatus());
 			Assert::same('Popis seznamu příjemců', $result->getDescription());
 		}
 	}

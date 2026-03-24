@@ -1,14 +1,8 @@
 [
   {
-    "NAME":"Testovací seznam",
-    "ID_USER_LIST":"123456",
-    "STATUS":"enabled",
-    "DESCRIPTION":"popis seznamu"
-  },
-  {
-    "NAME":"Druhý seznam",
-    "ID_USER_LIST":"123457",
-    "STATUS":"disabled",
-    "DESCRIPTION":""
+    "NAME": "Jméno seznamu příjemců",
+    "ID_USER_LIST": 12345,
+    "STATUS": "enabled",
+    "DESCRIPTION": "Popis seznamu příjemců"
   }
 ]

@@ -6,7 +6,6 @@ use Igloonet\MailkitApi\DataObjects\Enums\UnsubscribeMethod;
 use Igloonet\MailkitApi\DataObjects\SubscribeWebHook;
 use Igloonet\MailkitApi\DataObjects\User;
 use Igloonet\MailkitApi\Managers\WebHooksManager;
-use Nette\Utils\DateTime;
 use Tester\Assert;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -29,7 +28,7 @@ class WebHooksManagerTest extends MailkitTestCase
 		$response = $this->webHooksManager->processSubscribe($file);
 
 		Assert::same('1', $response->getEmailId());
-		Assert::type(DateTime::class, $response->getDate());
+		Assert::type(\DateTimeImmutable::class, $response->getDate());
 		Assert::same('192.168.100.100', $response->getIp());
 		Assert::same('Igloo', $response->getUser()->getFirstName());
 		Assert::same('fejjo@igloonet.cz', $response->getUser()->getEmail());
@@ -47,9 +46,9 @@ class WebHooksManagerTest extends MailkitTestCase
 		$response = $this->webHooksManager->processUnsubscribe($file);
 
 		Assert::same('1', $response->getEmailId());
-		Assert::type(DateTime::class, $response->getDate());
+		Assert::type(\DateTimeImmutable::class, $response->getDate());
 		Assert::same('192.168.100.100', $response->getIp());
-		Assert::same(UnsubscribeMethod::get('api_unsubscribe'), $response->getMethod());
+		Assert::same(UnsubscribeMethod::from('api_unsubscribe'), $response->getMethod());
 	}
 
 	public function testResponseBadIpProcessSubscribe()
@@ -62,5 +61,3 @@ class WebHooksManagerTest extends MailkitTestCase
 }
 
 (new WebHooksManagerTest)->run();
-
-

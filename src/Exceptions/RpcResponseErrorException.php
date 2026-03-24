@@ -15,7 +15,7 @@ abstract class RpcResponseErrorException extends \RuntimeException implements Ma
 		IRpcResponse $rpcResponse,
 		string $message = '',
 		int $code = 0,
-		Throwable $previous = null
+		?Throwable $previous = null
 	) {
 		$this->rpcResponse = $rpcResponse;
 

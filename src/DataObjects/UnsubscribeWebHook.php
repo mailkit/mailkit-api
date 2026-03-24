@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Igloonet\MailkitApi\DataObjects;
 
 use Igloonet\MailkitApi\DataObjects\Enums\UnsubscribeMethod;
-use Nette\Utils\DateTime;
 
 class UnsubscribeWebHook
 {
@@ -14,7 +13,7 @@ class UnsubscribeWebHook
 	/** @var string|null */
 	private $emailId = null;
 
-	/** @var DateTime|null */
+	/** @var \DateTimeImmutable|null */
 	private $date = null;
 
 	/** @var string|null */
@@ -41,7 +40,7 @@ class UnsubscribeWebHook
 	/** @var string|null */
 	private $timeout = null;
 
-	/** @var DateTime|null */
+	/** @var \DateTimeImmutable|null */
 	private $expire = null;
 
 	/** @var UnsubscribeMethod|null */
@@ -63,14 +62,12 @@ class UnsubscribeWebHook
 
 	public static function fromArray($jsonContent)
 	{
-		//validation
-
 		$user = self::createUser($jsonContent);
-		$subscribe =  new static($jsonContent, $user);
+		$subscribe = new static($jsonContent, $user);
 
 		$subscribe->user = $user;
 		$subscribe->emailId = self::validateEmptyString($jsonContent['ID_EMAIL']);
-		$subscribe->date = new DateTime($jsonContent['DATE']);
+		$subscribe->date = new \DateTimeImmutable($jsonContent['DATE']);
 		$subscribe->ip = self::validateIp($jsonContent['IP']);
 		$subscribe->ipOrig = self::validateIp($jsonContent['IP_ORIG']);
 		$subscribe->mailingListId = self::validateEmptyString($jsonContent['ID_ML']);
@@ -79,129 +76,84 @@ class UnsubscribeWebHook
 		$subscribe->topicActiveId = self::validateEmptyString($jsonContent['ID_TOPIC_ACTIVE']);
 		$subscribe->topicInactiveId = self::validateEmptyString($jsonContent['ID_TOPIC_INACTIVE']);
 		$subscribe->timeout = self::validateEmptyString($jsonContent['TIMEOUT']);
-		$subscribe->expire = new DateTime($jsonContent['EXPIRE']);
-		$subscribe->method = UnsubscribeMethod::get($jsonContent['METHOD']);
+		$subscribe->expire = new \DateTimeImmutable($jsonContent['EXPIRE']);
+		$subscribe->method = UnsubscribeMethod::from($jsonContent['METHOD']);
 		$subscribe->unsubscribeAnswer = self::validateEmptyString($jsonContent['UNSUBSCRIBE_ANSWER']);
 		$subscribe->unsubscribeNote = self::validateEmptyString($jsonContent['UNSUBSCRIBE_NOTE']);
 
 		return $subscribe;
 	}
 
-	/**
-	 * @return User|null
-	 */
 	public function getUser(): ?User
 	{
 		return $this->user;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getEmailId(): ?string
 	{
 		return $this->emailId;
 	}
 
-	/**
-	 * @return DateTime|null
-	 */
-	public function getDate(): ?DateTime
+	public function getDate(): ?\DateTimeImmutable
 	{
 		return $this->date;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getIp(): ?string
 	{
 		return $this->ip;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getIpOrig(): ?string
 	{
 		return $this->ipOrig;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getMailingListId(): ?string
 	{
 		return $this->mailingListId;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getSendId(): ?string
 	{
 		return $this->sendId;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getMessageId(): ?string
 	{
 		return $this->messageId;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getTopicActiveId(): ?string
 	{
 		return $this->topicActiveId;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getTopicInactiveId(): ?string
 	{
 		return $this->topicInactiveId;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getTimeout(): ?string
 	{
 		return $this->timeout;
 	}
 
-	/**
-	 * @return null|DateTime
-	 */
-	public function getExpire(): ?DateTime
+	public function getExpire(): ?\DateTimeImmutable
 	{
 		return $this->expire;
 	}
 
-	/**
-	 * @return UnsubscribeMethod|null
-	 */
 	public function getMethod(): ?UnsubscribeMethod
 	{
 		return $this->method;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getUnsubscribeAnswer(): ?string
 	{
 		return $this->unsubscribeAnswer;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getUnsubscribeNote(): ?string
 	{
 		return $this->unsubscribeNote;
@@ -221,10 +173,6 @@ class UnsubscribeWebHook
 		return null;
 	}
 
-	/**
-	 * @param array $jsonContent
-	 * @return User
-	 */
 	private static function createUser(array $jsonContent): User
 	{
 		$user = new User($jsonContent['EMAIL']);

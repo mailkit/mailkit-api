@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Igloonet\MailkitApi\DataObjects\Enums;
 
-class InsertStatus extends \Consistence\Enum\Enum
+enum InsertStatus: int
 {
-	const UPDATE = 0;
-	const INSERT = 1;
-	const INSERT_UNSUBSCRIBE = 2;
-	const UPDATE_UNSUBSCRIBE = 3;
-	const FAULT = 4;
+	case UPDATE = 0;
+	case INSERT = 1;
+	case INSERT_UNSUBSCRIBE = 2;
+	case UPDATE_UNSUBSCRIBE = 3;
+	case FAULT = 4;
 }

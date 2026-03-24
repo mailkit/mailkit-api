@@ -11,7 +11,7 @@ class AttachmentFileNotReadableException extends IOException implements Attachme
 	/** @var null|string  */
 	private $filePath = null;
 
-	public function __construct(string $filePath, string $message = '', int $code = 0, Throwable $previous = null)
+	public function __construct(string $filePath, string $message = '', int $code = 0, ?Throwable $previous = null)
 	{
 		$this->filePath = $filePath;
 

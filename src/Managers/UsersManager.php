@@ -31,13 +31,10 @@ use Igloonet\MailkitApi\Exceptions\User\UserStatusUnknownErrorException;
 use Igloonet\MailkitApi\Exceptions\User\UserUnsubscribtionException;
 use Igloonet\MailkitApi\Exceptions\User\UserUnsubscribtionInvalidEmailIdException;
 use Igloonet\MailkitApi\Exceptions\User\UserUnsubscribtionUnknownErrorException;
-use Igloonet\MailkitApi\RPC\Exceptions\InvalidDataTypeException;
-use Nette\Utils\Strings;
 
 class UsersManager extends BaseManager
 {
 	/**
-	 * @param string $emailAddress
 	 * @return array|User[]
 	 * @throws UserStatusReceiveException
 	 */
@@ -47,8 +44,6 @@ class UsersManager extends BaseManager
 	}
 
 	/**
-	 * @param int $emailId
-	 * @return User|null
 	 * @throws UserStatusReceiveException|TooManyStatusResultsException
 	 */
 	public function getUserByEmailId(int $emailId): ?User
@@ -70,7 +65,6 @@ class UsersManager extends BaseManager
 	}
 
 	/**
-	 * @param string $emailId
 	 * @return array|User[]
 	 * @throws UserStatusReceiveException
 	 */
@@ -91,13 +85,10 @@ class UsersManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Invalid ID_email':
 					throw new UserStatusNoExistingEmailIdException($rpcResponse);
-					break;
 				case 'Missing ID email':
 					throw new UserStatusMissingEmailIdException($rpcResponse);
-					break;
 				default:
 					throw new UserStatusUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
@@ -109,22 +100,22 @@ class UsersManager extends BaseManager
 			$user->setPrefix($userData['PREFIX'] ?? null);
 			$user->setPhone($userData['PHONE'] ?? null);
 			$user->setStreet($userData['STREET'] ?? null);
-			$user->setStatus(UserStatus::get($userData['STATUS']));
+			$user->setStatus(UserStatus::from($userData['STATUS']));
 			$user->setCity($userData['CITY'] ?? null);
 			$user->setCompany($userData['COMPANY'] ?? null);
 			$user->setFirstName($userData['FIRST_NAME'] ?? null);
 			$user->setLastName($userData['LAST_NAME'] ?? null);
 			$user->setEmail($userData['EMAIL'] ?? null);
 			$user->setFax($userData['FAX'] ?? null);
-			$user->setId($userData['ID_EMAIL'] ?? null);
+			$user->setId(isset($userData['ID_EMAIL']) ? (int)$userData['ID_EMAIL'] : null);
 			$user->setState($userData['STATE'] ?? null);
 			$user->setZip($userData['ZIP'] ?? null);
 			$user->setNickName($userData['NICK_NAME'] ?? null);
 			$user->setReplyTo($userData['REPLY_TO'] ?? null);
-			$user->setGender($userData['GENDER'] != "" ? Gender::get($userData['GENDER']) : null);
+			$user->setGender(!empty($userData['GENDER']) ? Gender::from($userData['GENDER']) : null);
 			$user->setCountry($userData['COUNTRY'] ?? null);
 			$user->setMobile($userData['MOBILE'] ?? null);
-			$user->setMailingListId($userData['ID_MAILING_LIST'] ?? null);
+			$user->setMailingListId(isset($userData['ID_MAILING_LIST']) ? (int)$userData['ID_MAILING_LIST'] : null);
 
 			for ($i = 1; $i <= User::CUSTOM_FIELDS_CNT; $i++) {
 				$user->setCustomField($i, $userData['CUSTOM_'.$i] ?? null);
@@ -137,40 +128,28 @@ class UsersManager extends BaseManager
 	}
 
 	/**
-	 * @param string $emailAddress
-	 * @param bool $sendOptOut
-	 * @param int|null $campaignMessageId
-	 * @return int
 	 * @throws UserUnsubscribtionException
 	 */
 	public function unsubscribeEmailAddress(
 		string $emailAddress,
 		bool $sendOptOut,
-		int $campaignMessageId = null
+		?int $campaignMessageId = null
 	): int {
 		return $this->unsubscribeUser($emailAddress, $sendOptOut, $campaignMessageId);
 	}
 
 	/**
-	 * @param int $emailId
-	 * @param bool $sendOptOut
-	 * @param int|null $campaignMessageId
-	 * @return int
 	 * @throws UserUnsubscribtionException
 	 */
-	public function unsubscribeEmailId(int $emailId, bool $sendOptOut, int $campaignMessageId = null): int
+	public function unsubscribeEmailId(int $emailId, bool $sendOptOut, ?int $campaignMessageId = null): int
 	{
 		return $this->unsubscribeUser((string)$emailId, $sendOptOut, $campaignMessageId);
 	}
 
 	/**
-	 * @param string $emailId
-	 * @param bool $sendOptOut
-	 * @param int|null $campaignMessageId
-	 * @return int
 	 * @throws UserUnsubscribtionException
 	 */
-	private function unsubscribeUser(string $emailId, bool $sendOptOut, int $campaignMessageId = null): int
+	private function unsubscribeUser(string $emailId, bool $sendOptOut, ?int $campaignMessageId = null): int
 	{
 		$params = [
 			'ID_email' => $emailId,
@@ -188,30 +167,20 @@ class UsersManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Invalid ID_email or email':
 					throw new UserUnsubscribtionInvalidEmailIdException($rpcResponse);
-					break;
 				default:
 					throw new UserUnsubscribtionUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
-		return $rpcResponse->getIntegerValue();
+		return (int)$rpcResponse->getArrayValue()['ID_email'];
 	}
 
-	/**
-	 * @param string $emailAddress
-	 * @param bool $agreement
-	 * @param string|null $channel
-	 * @param string|null $language
-	 * @param int|null $campaignMessageId
-	 * @return bool
-	 */
 	public function revalidateEmailAddress(
 		string $emailAddress,
 		bool $agreement,
-		string $channel = null,
-		string $language = null,
-		int $campaignMessageId = null
+		?string $channel = null,
+		?string $language = null,
+		?int $campaignMessageId = null
 	): bool {
 		return $this->revalidateUser($emailAddress, $agreement, $channel, $language, $campaignMessageId);
 	}
@@ -219,28 +188,22 @@ class UsersManager extends BaseManager
 	public function revalidateEmailId(
 		int $emailId,
 		bool $agreement,
-		string $channel = null,
-		string $language = null,
-		int $campaignMessageId = null
+		?string $channel = null,
+		?string $language = null,
+		?int $campaignMessageId = null
 	): bool {
 		return $this->revalidateUser((string)$emailId, $agreement, $channel, $language, $campaignMessageId);
 	}
 
 	/**
-	 * @param string $emailId
-	 * @param bool $agreement
-	 * @param string|null $channel
-	 * @param string|null $language
-	 * @param int|null $campaignMessageId
-	 * @return bool
 	 * @throws UserRevalidationException
 	 */
 	private function revalidateUser(
 		string $emailId,
 		bool $agreement,
-		string $channel = null,
-		string $language = null,
-		int $campaignMessageId = null
+		?string $channel = null,
+		?string $language = null,
+		?int $campaignMessageId = null
 	): bool {
 		$params = [
 			'ID_email' => $emailId,
@@ -252,73 +215,44 @@ class UsersManager extends BaseManager
 		];
 
 		$possibleErrors = [
-			'^.+ is not unsubscribed$'
+			'/^.+ is not unsubscribed$/'
 		];
 
 		$rpcResponse = $this->sendRpcRequest('mailkit.email.revalidate', $params, $possibleErrors);
 
 		if ($rpcResponse->isError()) {
-			if (Strings::endsWith($rpcResponse->getError(), ' is not unsubscribed')) {
+			if (str_ends_with($rpcResponse->getError(), ' is not unsubscribed')) {
 				throw new UserRevalidationNotUnsubscribedException($rpcResponse);
 			} else {
 				throw new UserRevalidationUnknownErrorException($rpcResponse);
 			}
 		}
 
-		$result = $rpcResponse->getStringValue();
+		$result = $rpcResponse->getArrayValue()['error'] ?? '';
 
 		return ($agreement === true && $result === 'Email has been revalidated') ||
 			($agreement === false && $result === 'Sent subscribe email');
 	}
 
 	/**
-	 * @param User $user
-	 * @param string|null $returnUrl
-	 * @param string|null $templateId
-	 * @return array
-	 */
-	private function getUserDataSectionsForAdd(User $user, ?string $returnUrl, ?string $templateId): array
-	{
-		return $this->fixEmptyUserDataSections($this->getUserDataSections($user, $returnUrl, $templateId));
-	}
-
-	/**
-	 * @param User $user
-	 * @return array
-	 */
-	private function getUserDataSectionsForEdit(User $user): array
-	{
-		$dataSections = $this->getUserDataSections($user, null, null);
-
-		unset($dataSections[0]['email']);
-
-		return $this->fixEmptyUserDataSections($dataSections);
-	}
-
-	/**
-	 * @param User $user
-	 * @param int|null $mailingListId
-	 * @param bool $doubleOptIn
-	 * @param string|null $returnUrl
-	 * @param string|null $templateId
-	 * @return bool
 	 * @throws UserCreationException
 	 */
 	public function addUser(
 		User $user,
 		?int $mailingListId,
 		bool $doubleOptIn,
-		string $returnUrl = null,
-		string $templateId = null
+		?string $returnUrl = null,
+		?string $templateId = null
 	): bool {
-		$params = [
-			'mailinglist_id' => $mailingListId ?? $user->getMailingListId() ,
-			'double_opt_in' => $this->getBooleanString($doubleOptIn)
-		];
+		[$personal, $address, $custom] = $this->getUserDataSections($user, $returnUrl, $templateId);
 
-		foreach ($this->getUserDataSectionsForAdd($user, $returnUrl, $templateId) as $dataSection) {
-			$params[] = $dataSection;
-		}
+		$params = [
+			'ID_user_list' => $mailingListId ?? $user->getMailingListId(),
+			'confirm' => $this->getBooleanString($doubleOptIn),
+			'personal' => $personal,
+			'address' => $address,
+			'custom' => $custom,
+		];
 
 		$possibleErrors = [
 			'Missing email',
@@ -334,52 +268,33 @@ class UsersManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Missing email':
 					throw new UserCreationMissingEmailException($rpcResponse);
-					break;
 				case 'Bad email syntax':
 					throw new UserCreationBadEmailSyntaxException($rpcResponse, $user->getEmail());
-					break;
 				case 'Missing ID_mailing_list':
 					throw new UserCreationMissingMailingListIdException($rpcResponse);
-					break;
 				case 'Invalid ID_mailing_list':
 					throw new UserCreationInvalidMailingListIdException($rpcResponse);
-					break;
 				case 'Invalid ID_template':
 					throw new UserCreationInvalidTemplateIdException($rpcResponse);
-					break;
 				default:
 					throw new UserCreationUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
-		try {
-			$message = $rpcResponse->getStringValue();
-			if ($message === 'Sent subscribe email') {
-				return true;
-			} else {
-				throw new UserCreationUnknownErrorException($rpcResponse, $message);
-			}
-		} catch (InvalidDataTypeException $ex) {
-			$value = $rpcResponse->getArrayValue();
+		$value = $rpcResponse->getArrayValue();
 
-			if (isset($value['data']) && is_numeric($value['data'])) {
-				$user->setId((int)$value['data']);
-			}
+		if (isset($value['ID_email']) && is_numeric($value['ID_email'])) {
+			$user->setId((int)$value['ID_email']);
+		}
 
-			if (isset($value['status']) && is_numeric($value['status'])) {
-				$user->setInsertStatus(InsertStatus::get($value['status']));
-			}
+		if (isset($value['status']) && is_numeric($value['status'])) {
+			$user->setInsertStatus(InsertStatus::from((int)$value['status']));
 		}
 
 		return true;
 	}
 
 	/**
-	 * @param User $user
-	 * @param int|null $mailingListId
-	 * @param bool $keepValues
-	 * @return bool
 	 * @throws UserEditException
 	 */
 	public function editUser(
@@ -387,21 +302,24 @@ class UsersManager extends BaseManager
 		?int $mailingListId,
 		bool $keepValues
 	): bool {
-		$params = [
-			'mailinglist_id' => $mailingListId ?? $user->getMailingListId(),
-			'email_id' => $user->getEmail(),
-			'keep_values' => $this->getBooleanString($keepValues),
-		];
+		[$personal, $address, $custom] = $this->getUserDataSections($user, null, null);
+		unset($personal['email']);
 
-		foreach ($this->getUserDataSectionsForEdit($user) as $dataSection) {
-			$params[] = $dataSection;
-		}
+		$params = [
+			'ID_user_list' => $mailingListId ?? $user->getMailingListId(),
+			'ID_email' => $user->getEmail(),
+			'personal' => $personal,
+			'address' => $address,
+			'custom' => $custom,
+		];
 
 		$possibleErrors = [
 			'Missing ID_email',
 			'Invalid ID_email',
+			'Missing ID_user_list',
+			'Invalid ID_user_list',
 			'Missing ID_mailing_list',
-			'Invalid ID_mailing_list'
+			'Invalid ID_mailing_list',
 		];
 
 		$rpcResponse = $this->sendRpcRequest('mailkit.mailinglist.edituser', $params, $possibleErrors);
@@ -410,23 +328,21 @@ class UsersManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Missing ID_email':
 					throw new UserEditMissingEmailIdException($rpcResponse);
-					break;
 				case 'Invalid ID_email':
 					throw new UserEditInvalidEmailIdException($rpcResponse);
-					break;
+				case 'Missing ID_user_list':
 				case 'Missing ID_mailing_list':
 					throw new UserEditMissingMailingListIdException($rpcResponse);
-					break;
+				case 'Invalid ID_user_list':
 				case 'Invalid ID_mailing_list':
 					throw new UserEditInvalidMailingListIdException($rpcResponse);
-					break;
 				default:
 					throw new UserEditUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
-		$message = trim($rpcResponse->getStringValue());
+		$value = $rpcResponse->getArrayValue();
+		$message = trim($value['error'] ?? '');
 
 		if ($message === 'OK') {
 			return true;

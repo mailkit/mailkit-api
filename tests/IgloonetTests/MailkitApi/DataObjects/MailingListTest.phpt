@@ -12,7 +12,7 @@ class MailingListTest extends Tester\TestCase
 		$mailingList  = \Igloonet\MailkitApi\DataObjects\MailingList::create(
 			12345,
 			'mailingList',
-			MailingListStatus::get(MailingListStatus::STATUS_ENABLED),
+			MailingListStatus::STATUS_ENABLED,
 			'description'
 		);
 
@@ -26,7 +26,7 @@ class MailingListTest extends Tester\TestCase
 		$mailingList  = \Igloonet\MailkitApi\DataObjects\MailingList::create(
 			12345,
 			'mailingList',
-			MailingListStatus::get(MailingListStatus::STATUS_ENABLED),
+			MailingListStatus::STATUS_ENABLED,
 			'description'
 		);
 

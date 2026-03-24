@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Igloonet\MailkitApi\DataObjects\Enums;
 
-class MailingListStatus extends \Consistence\Enum\Enum
+enum MailingListStatus: string
 {
-	const STATUS_ENABLED = 'enabled';
-	const STATUS_DISABLED = 'disabled';
+	case STATUS_ENABLED = 'enabled';
+	case STATUS_DISABLED = 'disabled';
 }

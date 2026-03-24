@@ -1,0 +1,28 @@
+[
+  {
+    "VOCATIVE": "Oslovení",
+    "PREFIX": "titul",
+    "FIRST_NAME": "Jméno",
+    "LAST_NAME": "Příjmení",
+    "NICK_NAME": "přezdívka",
+    "GENDER": "M",
+    "EMAIL": "example@example.cz",
+    "ID_EMAIL": 12345,
+    "REPLY_TO": "example2@example2.cz",
+    "PHONE": "12345",
+    "FAX": "12345",
+    "MOBILE": "12345",
+    "COMPANY": "Společnost",
+    "STREET": "Adresa",
+    "CITY": "Město",
+    "COUNTRY": "Kraj",
+    "ZIP": "PSČ",
+    "STATE": "země",
+    "DATE": "2020-01-01 00:00:00",
+    "CHANGE_DATE": "2020-01-01 00:00:00",
+    "STATUS": "enabled",
+    "CUSTOM_1": "Vlastní pole číslo 1",
+    "CUSTOM_2": "Vlastní pole číslo 2",
+    "CUSTOM_25": "Vlastní pole číslo 25"
+  }
+]

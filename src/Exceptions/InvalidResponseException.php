@@ -11,7 +11,7 @@ class InvalidResponseException extends \RuntimeException implements MailkitApiEx
 	/** @var IRpcResponse|null  */
 	private $response = null;
 
-	public function __construct(IRpcResponse $response, string $message = '', int $code = 0, Throwable $previous = null)
+	public function __construct(IRpcResponse $response, string $message = '', int $code = 0, ?Throwable $previous = null)
 	{
 		parent::__construct($message, $code, $previous);
 

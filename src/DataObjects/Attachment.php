@@ -66,7 +66,7 @@ class Attachment
 	 * @param string|null $name
 	 * @return Attachment
 	 */
-	public static function fromFile(string $filePath, string $name = null): self
+	public static function fromFile(string $filePath, ?string $name = null): self
 	{
 		if (trim($name ?? '') === '') {
 			$name = pathinfo($filePath, PATHINFO_BASENAME);

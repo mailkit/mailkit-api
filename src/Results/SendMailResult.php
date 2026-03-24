@@ -30,42 +30,26 @@ class SendMailResult implements IApiMethodResult
 		$this->status = $status;
 	}
 
-	/**
-	 * @return int|null
-	 */
 	public function getEmailId(): ?int
 	{
 		return $this->emailId;
 	}
 
-	/**
-	 * @return int|null
-	 */
 	public function getSendingId(): ?int
 	{
 		return $this->sendingId;
 	}
 
-	/**
-	 * @return int|null
-	 */
 	public function getMessageId(): ?int
 	{
 		return $this->messageId;
 	}
 
-	/**
-	 * @return SendMailResultStatus|null
-	 */
 	public function getStatus(): ?SendMailResultStatus
 	{
 		return $this->status;
 	}
 
-	/**
-	 * @param IRpcResponse $rpcResponse
-	 * @return SendMailResult
-	 */
 	public static function fromRpcResponse(IRpcResponse $rpcResponse): self
 	{
 		$value = $rpcResponse->getArrayValue();
@@ -79,7 +63,7 @@ class SendMailResult implements IApiMethodResult
 		$emailId = is_numeric($value['data']) && (int)$value['data'] > 0 ? (int)$value['data'] : null;
 		$sendingId = is_numeric($value['data2']) && (int)$value['data2'] > 0 ? (int)$value['data2'] : null;
 		$messageId = is_numeric($value['data3']) && (int)$value['data3'] > 0 ? (int)$value['data3'] : null;
-		$status = is_numeric($value['status']) ? SendMailResultStatus::get($value['status']): null;
+		$status = is_numeric($value['status']) ? SendMailResultStatus::from((int)$value['status']) : null;
 
 		return new static($emailId, $sendingId, $messageId, $status);
 	}

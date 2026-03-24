@@ -78,7 +78,7 @@ class User
 	/** @var array|string[] */
 	private $customFields = [];
 
-	public function __construct(string $email = null)
+	public function __construct(?string $email = null)
 	{
 		$this->email = $email;
 	}
@@ -290,23 +290,6 @@ class User
 	public function getGender(): ?Gender
 	{
 		return $this->gender;
-	}
-
-	/**
-	 * @param string $gender
-	 * @return bool
-	 */
-	private function isValidGender(string $gender): bool
-	{
-		return in_array(trim($gender), [
-			Gender::getAvailableValues(),
-			'male',
-			'female',
-			'muz',
-			'zena',
-			'm',
-			'f'
-		], true);
 	}
 
 	/**

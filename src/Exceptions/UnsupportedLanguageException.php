@@ -10,7 +10,7 @@ class UnsupportedLanguageException extends InvalidArgumentException
 	/** @var string */
 	private $language = null;
 
-	public function __construct(string $language, string $message = '', int $code = 0, Throwable $previous = null)
+	public function __construct(string $language, string $message = '', int $code = 0, ?Throwable $previous = null)
 	{
 		$this->language = $language;
 

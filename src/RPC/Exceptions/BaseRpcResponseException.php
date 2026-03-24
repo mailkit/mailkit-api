@@ -13,10 +13,10 @@ abstract class BaseRpcResponseException extends BaseRpcException
 	public function __construct(
 		string $method,
 		array $requestData,
-		array $responseData,
+		mixed $responseData,
 		string $message = '',
 		int $code = 0,
-		Throwable $previous = null
+		?Throwable $previous = null
 	) {
 		$this->responseData = $responseData;
 

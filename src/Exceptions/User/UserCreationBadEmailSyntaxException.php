@@ -16,7 +16,7 @@ class UserCreationBadEmailSyntaxException extends UserCreationException
 		string $emailAddress,
 		?string $message = '',
 		int $code = 0,
-		Throwable $previous = null
+		?Throwable $previous = null
 	) {
 		$this->emailAddress = $emailAddress;
 

@@ -13,9 +13,8 @@ use Igloonet\MailkitApi\RPC\Responses\JsonErrorRpcResponse;
 use Igloonet\MailkitApi\RPC\Responses\JsonSuccessRpcResponse;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
-class JsonAdapter extends BaseAdapter
+class JsonAdapter implements IAdapter
 {
 	public const SUPPORTED_METHODS = [
 		'mailkit.mailinglist.list',
@@ -24,6 +23,8 @@ class JsonAdapter extends BaseAdapter
 		'mailkit.mailinglist.import',
 		'mailkit.mailinglist.getstatus',
 		'mailkit.mailinglist.unsubscribed',
+		'mailkit.mailinglist.adduser',
+		'mailkit.mailinglist.edituser',
 		'mailkit.email.getstatus',
 		'mailkit.email.getstatus.history',
 		'mailkit.email.unsubscribe',
@@ -42,30 +43,25 @@ class JsonAdapter extends BaseAdapter
 		'mailkit.report.message.bounces',
 		'mailkit.report.raw.messages',
 		'mailkit.report.raw.responses',
-		'mailkit.report.raw.bounces'
+		'mailkit.report.raw.bounces',
+		'mailkit.sendmail',
 	];
 
-	/** @var string  */
-	private $apiUrl = 'https://api.mailkit.eu/json.fcgi';
+	private string $apiUrl = 'https://api.mailkit.eu/json.fcgi';
 
-	/**
-	 * @param string $method
-	 * @return bool
-	 */
+	public function __construct(
+		private string $clientId,
+		private string $clientMd5
+	) {}
+
 	public function supportsMethod(string $method): bool
 	{
 		return in_array($method, self::SUPPORTED_METHODS, true);
 	}
 
-	/**
-	 * @param string $method
-	 * @param array $params
-	 * @param array $possibleErrors
-	 * @return IRpcResponse
-	 */
 	public function sendRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
-		list($requestData, $content) = $this->getContent($method, $params);
+		[$requestData, $content] = $this->getContent($method, $params);
 
 		if ($content === false) {
 			throw new RpcRequestFailedException(
@@ -95,9 +91,9 @@ class JsonAdapter extends BaseAdapter
 			$error = $responseData['error'] ?? '';
 			if (trim($error) === 'Unauthorized') {
 				throw new UnauthorizedException($method, $requestData, '', (int)$responseData['error_status']);
-			} elseif (Strings::startsWith(trim($error), 'Disallowed IP')) {
+			} elseif (str_starts_with(trim($error), 'Disallowed IP')) {
 				throw new UnauthorizedException($method, $requestData, $error, (int)$responseData['error_status']);
-			} elseif (!in_array($error, $possibleErrors, true)) {
+			} elseif (!$this->isKnownError($error, $possibleErrors)) {
 				throw new RpcResponseUnknownErrorException(
 					$method,
 					$requestData,
@@ -114,11 +110,19 @@ class JsonAdapter extends BaseAdapter
 		return new JsonSuccessRpcResponse($responseData);
 	}
 
-	/**
-	 * @param string $method
-	 * @param array $params
-	 * @return array
-	 */
+	private function isKnownError(string $error, array $possibleErrors): bool
+	{
+		foreach ($possibleErrors as $possibleError) {
+			if ($error === $possibleError) {
+				return true;
+			}
+			if (@preg_match($possibleError, $error) === 1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private function prepareRequestData(string $method, array $params): array
 	{
 		return [
@@ -129,11 +133,6 @@ class JsonAdapter extends BaseAdapter
 		];
 	}
 
-	/**
-	 * @param array $data
-	 * @return array
-	 * @throws JsonException
-	 */
 	private function getStreamContextOptions(array $data): array
 	{
 		return [
@@ -145,12 +144,6 @@ class JsonAdapter extends BaseAdapter
 		];
 	}
 
-	/**
-	 * @param string $method
-	 * @param array $params
-	 * @return array
-	 * @throws JsonException
-	 */
 	protected function getContent(string $method, array $params): array
 	{
 		$requestData = $this->prepareRequestData($method, $params);
@@ -159,6 +152,6 @@ class JsonAdapter extends BaseAdapter
 
 		$content = file_get_contents($this->apiUrl, false, $context);
 
-		return array($requestData, $content);
+		return [$requestData, $content];
 	}
 }

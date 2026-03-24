@@ -7,7 +7,6 @@ use Igloonet\MailkitApi\DataObjects\User;
 use Igloonet\MailkitApi\Exceptions\UnsupportedLanguageException;
 use Igloonet\MailkitApi\RPC\Client;
 use Igloonet\MailkitApi\RPC\Responses\IRpcResponse;
-use Nette\Utils\Strings;
 
 abstract class BaseManager
 {
@@ -29,39 +28,21 @@ abstract class BaseManager
 		$this->defaultLanguage = $this->validateLanguage($defaultLanguage);
 	}
 
-	/**
-	 * @param string $method
-	 * @param array $params
-	 * @param array $possibleErrors
-	 * @return IRpcResponse
-	 */
 	protected function sendRpcRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
 		return $this->client->sendRpcRequest($method, $params, $possibleErrors);
 	}
 
-	/**
-	 * @param bool $value
-	 * @return string
-	 */
 	protected function getBooleanString(bool $value): string
 	{
 		return $value === true ? "TRUE" : "FALSE";
 	}
 
-	/**
-	 * @param string $str|null
-	 * @return string
-	 */
 	protected function encodeString(?string $str = null): ?string
 	{
 		return $str === null ? null : base64_encode($str);
 	}
 
-	/**
-	 * @param array $arr
-	 * @return array
-	 */
 	protected function filterNullsFromArray(array $arr): array
 	{
 		return array_filter($arr, function ($value) {
@@ -69,10 +50,6 @@ abstract class BaseManager
 		});
 	}
 
-	/**
-	 * @param null|string $language
-	 * @return null|string
-	 */
 	protected function validateLanguage(?string $language): ?string
 	{
 		if ($language === null) {
@@ -81,7 +58,7 @@ abstract class BaseManager
 			return $this->defaultLanguage;
 		}
 
-		$language = trim(Strings::lower($language));
+		$language = trim(strtolower($language));
 
 		if (!in_array($language, $this->enabledLanguages, true)) {
 			throw new UnsupportedLanguageException($language);
@@ -90,12 +67,6 @@ abstract class BaseManager
 		return $language;
 	}
 
-	/**
-	 * @param User $user
-	 * @param string|null $returnUrl
-	 * @param string|null $templateId
-	 * @return array
-	 */
 	protected function getUserDataSections(User $user, ?string $returnUrl, ?string $templateId): array
 	{
 		$data1 = [
@@ -105,7 +76,7 @@ abstract class BaseManager
 			'prefix' => $this->encodeString($user->getPrefix()),
 			'first_name' => $this->encodeString($user->getFirstName()),
 			'last_name' => $this->encodeString($user->getLastName()),
-			'status' => $user->getStatus(),
+			'status' => $this->encodeString($user->getStatus()?->value),
 			'email' => $this->encodeString($user->getEmail()),
 			'reply_to' => $this->encodeString($user->getReplyTo()),
 			'company' => $this->encodeString($user->getCompany()),
@@ -121,7 +92,7 @@ abstract class BaseManager
 			'mobile' => $this->encodeString($user->getMobile()),
 			'phone' => $this->encodeString($user->getPhone()),
 			'fax' => $this->encodeString($user->getFax()),
-			'gender' => $user->getGender()
+			'gender' => $this->encodeString($user->getGender()?->value),
 		];
 
 		$data3 = [];
@@ -134,20 +105,5 @@ abstract class BaseManager
 		$data3 = $this->filterNullsFromArray($data3);
 
 		return [$data1, $data2, $data3];
-	}
-
-	/**
-	 * @param array $dataSections
-	 * @return array
-	 */
-	protected function fixEmptyUserDataSections(array $dataSections): array
-	{
-		foreach ($dataSections as &$dataSection) {
-			if (count($dataSection) === 0) {
-				$dataSection[''] = null; // forces xmlrpc_encode_request to generate struct instead of array
-			}
-		}
-
-		return $dataSections;
 	}
 }

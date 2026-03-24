@@ -14,7 +14,6 @@ use Igloonet\MailkitApi\Exceptions\MailingList\MailingListMissingIdException;
 use Igloonet\MailkitApi\Exceptions\MailingList\MailingListMissingNameException;
 use Igloonet\MailkitApi\Exceptions\MailingList\MailingListNotFoundException;
 use Igloonet\MailkitApi\Exceptions\MailingList\MailingListsLoadException;
-use Nette\Utils\Strings;
 
 class MailingListsManager extends BaseManager
 {
@@ -33,9 +32,9 @@ class MailingListsManager extends BaseManager
 
 		foreach ($rpcResponse->getArrayValue() as $mailingListData) {
 			$mailingLists[] = MailingList::create(
-				$mailingListData['ID_USER_LIST'],
+				(int)$mailingListData['ID_USER_LIST'],
 				$mailingListData['NAME'],
-				MailingListStatus::get($mailingListData['STATUS']),
+				MailingListStatus::from($mailingListData['STATUS']),
 				$mailingListData['DESCRIPTION']
 			);
 		}
@@ -43,12 +42,7 @@ class MailingListsManager extends BaseManager
 		return $mailingLists;
 	}
 
-	/**
-	 * @param string $name
-	 * @param string|null $description
-	 * @return MailingList
-	 */
-	public function createMailingList(string $name, string $description = null): MailingList
+	public function createMailingList(string $name, ?string $description = null): MailingList
 	{
 		$params = [
 			'name' => $name
@@ -69,13 +63,10 @@ class MailingListsManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Missing name of mailing list':
 					throw new MailingListMissingNameException($rpcResponse);
-					break;
 				case 'Mailing list exist':
 					throw new MailingListExistsException($rpcResponse);
-					break;
 				default:
 					throw new MailingListCreationUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
@@ -87,22 +78,15 @@ class MailingListsManager extends BaseManager
 		return $mailingList;
 	}
 
-	/**
-	 * @param int $id
-	 * @return bool
-	 */
 	public function flushMailingList(int $id): bool
 	{
 		return $this->deleteMailingList($id, true);
 	}
 
 	/**
-	 * @param int $id
-	 * @param bool $keepList
-	 * @return bool
 	 * @throws MailingListDeletionException
 	 */
-	public function deleteMailingList(int $id, $keepList = false): bool
+	public function deleteMailingList(int $id, bool $keepList = false): bool
 	{
 		$params = [
 			'ID_user_list' => $id,
@@ -120,13 +104,10 @@ class MailingListsManager extends BaseManager
 			switch ($rpcResponse->getError()) {
 				case 'Missing ID_user_list':
 					throw new MailingListMissingIdException($rpcResponse);
-					break;
 				case 'Invalid ID_user_list':
 					throw new MailingListInvalidIdException($rpcResponse);
-					break;
 				default:
 					throw new MailingListDeletionUnknownErrorException($rpcResponse);
-					break;
 			}
 		}
 
@@ -140,9 +121,6 @@ class MailingListsManager extends BaseManager
 	}
 
 	/**
-	 * @param string $name
-	 * @param bool $keepList
-	 * @return bool
 	 * @throws MailingListNotFoundException|MailingListsLoadException|MailingListDeletionException
 	 */
 	public function deleteMailingListByName(string $name, bool $keepList = false): bool
@@ -153,8 +131,6 @@ class MailingListsManager extends BaseManager
 	}
 
 	/**
-	 * @param string $name
-	 * @return MailingList
 	 * @throws MailingListNotFoundException|MailingListsLoadException
 	 */
 	public function getMailingListByName(string $name): MailingList
@@ -166,21 +142,10 @@ class MailingListsManager extends BaseManager
 		return $mailingList;
 	}
 
-	/**
-	 * @param string $name
-	 * @return MailingList|null
-	 */
 	public function findMailingListByName(string $name): ?MailingList
 	{
 		foreach ($this->getMailingLists() as $mailingList) {
-			if (Strings::compare($mailingList->getName(), $name)) {
-				return $mailingList;
-			}
-		}
-
-		$nameLower = Strings::lower($name);
-		foreach ($this->getMailingLists() as $mailingList) {
-			if (Strings::compare(Strings::lower($mailingList->getName()), $nameLower)) {
+			if (strcasecmp($mailingList->getName(), $name) === 0) {
 				return $mailingList;
 			}
 		}

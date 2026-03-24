@@ -20,7 +20,7 @@ class RpcResponseUnknownErrorException extends BaseRpcException
 		array $possibleErrors,
 		string $message = '',
 		int $code = 0,
-		Throwable $previous = null
+		?Throwable $previous = null
 	) {
 		$this->error = $error;
 		$this->possibleErrors = $possibleErrors;
