@@ -19,6 +19,9 @@ $clientId = 'id';
 $clientMd5 = 'md5';
 $client = new \Igloonet\MailkitApi\RPC\Client($clientId, $clientMd5);
 
+// Optionally override the API endpoint (e.g. for testing or staging):
+// $client = new \Igloonet\MailkitApi\RPC\Client($clientId, $clientMd5, 'https://custom-endpoint/json.fcgi');
+
 $userManager = new \Igloonet\MailkitApi\Managers\UsersManager($client, ['cs'], 'cs');
 $messagesManager = new \Igloonet\MailkitApi\Managers\MessagesManager($client, ['cs'], 'cs');
 $listManager = new \Igloonet\MailkitApi\Managers\MailingListsManager($client, ['cs'], 'cs');

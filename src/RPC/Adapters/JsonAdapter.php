@@ -47,11 +47,12 @@ class JsonAdapter implements IAdapter
 		'mailkit.sendmail',
 	];
 
-	private string $apiUrl = 'https://api.mailkit.eu/json.fcgi';
+	public const DEFAULT_API_URL = 'https://api.mailkit.eu/json.fcgi';
 
 	public function __construct(
 		private string $clientId,
-		private string $clientMd5
+		private string $clientMd5,
+		private string $apiUrl = self::DEFAULT_API_URL
 	) {}
 
 	public function supportsMethod(string $method): bool
@@ -59,14 +60,20 @@ class JsonAdapter implements IAdapter
 		return in_array($method, self::SUPPORTED_METHODS, true);
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @param array<string> $possibleErrors
+	 */
 	public function sendRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
-		[$requestData, $content] = $this->getContent($method, $params);
+		[$requestData, $content, $httpStatusCode] = $this->getContent($method, $params);
 
 		if ($content === false) {
+			$lastError = error_get_last();
 			throw new RpcRequestFailedException(
 				$method,
-				$requestData
+				$requestData,
+				sprintf('API request %s failed: %s', $method, $lastError['message'] ?? 'connection failed')
 			);
 		}
 
@@ -85,6 +92,16 @@ class JsonAdapter implements IAdapter
 
 		if (!is_array($responseData)) {
 			throw new InvalidRpcResponseDataTypeException($method, $requestData, $responseData);
+		}
+
+		if ($httpStatusCode !== null && $httpStatusCode >= 400
+			&& (!isset($responseData['error_status']) || (int)$responseData['error_status'] === 0)) {
+			$error = $responseData['error'] ?? $responseData['message'] ?? '';
+			throw new RpcRequestFailedException(
+				$method,
+				$requestData,
+				sprintf('API request %s failed with HTTP %d%s', $method, $httpStatusCode, $error !== '' ? ": $error" : '')
+			);
 		}
 
 		if (isset($responseData['error_status']) && (int)$responseData['error_status'] !== 0) {
@@ -110,6 +127,7 @@ class JsonAdapter implements IAdapter
 		return new JsonSuccessRpcResponse($responseData);
 	}
 
+	/** @param array<string> $possibleErrors */
 	private function isKnownError(string $error, array $possibleErrors): bool
 	{
 		foreach ($possibleErrors as $possibleError) {
@@ -126,6 +144,10 @@ class JsonAdapter implements IAdapter
 		return false;
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @return array<string, mixed>
+	 */
 	private function prepareRequestData(string $method, array $params): array
 	{
 		return [
@@ -136,13 +158,18 @@ class JsonAdapter implements IAdapter
 		];
 	}
 
+	/**
+	 * @param array<string, mixed> $data
+	 * @return array<string, mixed>
+	 */
 	private function getStreamContextOptions(array $data): array
 	{
 		return [
 			'http' => [
 				'method' => 'POST',
 				'header' => 'Content-Type: application/json',
-				'content' => Json::encode($data)
+				'content' => Json::encode($data),
+				'ignore_errors' => true,
 			],
 			'ssl' => [
 				'verify_peer' => true,
@@ -151,14 +178,24 @@ class JsonAdapter implements IAdapter
 		];
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @return array{array<string, mixed>, string|false, int|null}
+	 */
 	protected function getContent(string $method, array $params): array
 	{
 		$requestData = $this->prepareRequestData($method, $params);
 
 		$context = stream_context_create($this->getStreamContextOptions($requestData));
 
-		$content = file_get_contents($this->apiUrl, false, $context);
+		$content = @file_get_contents($this->apiUrl, false, $context);
 
-		return [$requestData, $content];
+		$httpStatusCode = null;
+		if (isset($http_response_header[0])
+			&& preg_match('{^HTTP/\S+ (\d{3})}', $http_response_header[0], $m)) {
+			$httpStatusCode = (int) $m[1];
+		}
+
+		return [$requestData, $content, $httpStatusCode];
 	}
 }

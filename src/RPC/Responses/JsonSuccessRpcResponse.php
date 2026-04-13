@@ -7,16 +7,17 @@ use Igloonet\MailkitApi\RPC\Exceptions\InvalidDataTypeException;
 
 class JsonSuccessRpcResponse extends SuccessRpcResponse
 {
-	/** @var array|null */
+	/** @var array<string, mixed>|null */
 	protected $data = null;
 
+	/** @param array<string, mixed> $data */
 	public function __construct(array $data)
 	{
 		$this->data = $data;
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 * @throws InvalidDataTypeException
 	 */
 	public function getArrayValue(): array
@@ -44,6 +45,7 @@ class JsonSuccessRpcResponse extends SuccessRpcResponse
 	}
 
 
+	/** @return array<mixed> */
 	public function getArrayData(): array
 	{
 		if (!isset($this->data['data']) || !is_array($this->data['data'])) {

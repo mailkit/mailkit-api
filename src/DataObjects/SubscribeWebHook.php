@@ -5,7 +5,7 @@ namespace Igloonet\MailkitApi\DataObjects;
 
 use Igloonet\MailkitApi\DataObjects\Enums\Gender;
 
-class SubscribeWebHook
+final class SubscribeWebHook
 {
 	/** @var User|null */
 	private $user = null;
@@ -46,20 +46,18 @@ class SubscribeWebHook
 	/** @var string|null */
 	private $urlCode = null;
 
-	/** $jsonContent */
-	private $jsonContent = null;
-
-	private function __construct(array $jsonContent, User $user) {
-		$this->jsonContent = $jsonContent;
+	private function __construct(User $user) {
 		$this->user = $user;
 	}
 
-	public static function fromArray($jsonContent)
+	/**
+	 * @param array<string, mixed> $jsonContent
+	 */
+	public static function fromArray(array $jsonContent): self
 	{
 		$user = self::createUser($jsonContent);
-		$subscribe = new static($jsonContent, $user);
+		$subscribe = new self($user);
 
-		$subscribe->user = $user;
 		$subscribe->emailId = self::validateEmptyString($jsonContent['ID_EMAIL']);
 		$subscribe->ip = self::validateIp($jsonContent['IP']);
 		$subscribe->ipOrig = self::validateIp($jsonContent['IP_ORIG']);
@@ -145,6 +143,7 @@ class SubscribeWebHook
 		return $this->urlCode;
 	}
 
+	/** @param array<string, mixed> $jsonContent */
 	private static function createUser(array $jsonContent): User
 	{
 		$user = new User($jsonContent['EMAIL']);
@@ -172,12 +171,12 @@ class SubscribeWebHook
 		return $user;
 	}
 
-	private static function validateEmptyString($string)
+	private static function validateEmptyString(mixed $string): ?string
 	{
 		return trim($string ?? '') === '' ? null : trim($string);
 	}
 
-	private static function validateIp($ipAddress)
+	private static function validateIp(mixed $ipAddress): ?string
 	{
 		if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
 			return $ipAddress;

@@ -6,9 +6,9 @@ namespace Igloonet\MailkitApi\RPC\Responses;
 use Igloonet\MailkitApi\RPC\Exceptions\InvalidDataTypeException;
 use Igloonet\MailkitApi\RPC\Exceptions\UnsupportedDataTypeException;
 
-class XmlSuccessRpcResponse extends SuccessRpcResponse
+final class XmlSuccessRpcResponse extends SuccessRpcResponse
 {
-	/** @var array|null */
+	/** @var array<string, mixed>|null */
 	protected $arrayValue = null;
 
 	/** @var string|null */
@@ -20,6 +20,7 @@ class XmlSuccessRpcResponse extends SuccessRpcResponse
 	/** @var bool|null */
 	protected $booleanValue = null;
 
+	/** @param array<string, mixed>|null $arrayValue */
 	public function __construct(?array $arrayValue, ?string $stringValue, ?int $integerValue, ?bool $booleanValue)
 	{
 		$this->arrayValue = $arrayValue;
@@ -29,7 +30,7 @@ class XmlSuccessRpcResponse extends SuccessRpcResponse
 	}
 
 	/**
-	 * @param array|string|int|bool $data
+	 * @param array<string, mixed>|string|int|bool $data
 	 * @return XmlSuccessRpcResponse
 	 * @throws UnsupportedDataTypeException
 	 */
@@ -47,13 +48,13 @@ class XmlSuccessRpcResponse extends SuccessRpcResponse
 			throw new UnsupportedDataTypeException(sprintf(
 				'%s does not support data type %s. Supports only array, string or integer data type.',
 				static::class,
-				is_object($data) ? get_class($data) : gettype($data)
+				gettype($data)
 			));
 		}
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 * @throws InvalidDataTypeException
 	 */
 	public function getArrayValue(): array
@@ -117,7 +118,7 @@ class XmlSuccessRpcResponse extends SuccessRpcResponse
 	}
 
 	/**
-	 * @return array
+	 * @return array<mixed>
 	 * @throws InvalidDataTypeException
 	 */
 	public function getArrayData(): array

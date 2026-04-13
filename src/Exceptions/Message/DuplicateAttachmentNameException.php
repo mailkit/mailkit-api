@@ -12,6 +12,8 @@ class DuplicateAttachmentNameException extends \LogicException
 
 	public function __construct(?string $name, string $message = '', int $code = 0, ?Throwable $previous = null)
 	{
+		$this->name = $name;
+
 		if (trim($message) === '') {
 			$message = sprintf('Attachment with name %s already exists in this message!', $name);
 		}

@@ -15,12 +15,13 @@ abstract class BaseManager
 	/** @var Client */
 	protected $client = null;
 
-	/** @var array|string[] */
+	/** @var array<string> */
 	protected $enabledLanguages = null;
 
 	/** @var string */
 	protected $defaultLanguage = null;
 
+	/** @param array<string> $enabledLanguages */
 	public function __construct(Client $client, array $enabledLanguages, string $defaultLanguage)
 	{
 		$this->client = $client;
@@ -28,6 +29,10 @@ abstract class BaseManager
 		$this->defaultLanguage = $this->validateLanguage($defaultLanguage);
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @param array<string> $possibleErrors
+	 */
 	protected function sendRpcRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
 		return $this->client->sendRpcRequest($method, $params, $possibleErrors);
@@ -43,6 +48,10 @@ abstract class BaseManager
 		return $str === null ? null : base64_encode($str);
 	}
 
+	/**
+	 * @param array<string, string|null> $arr
+	 * @return array<string, string>
+	 */
 	protected function filterNullsFromArray(array $arr): array
 	{
 		return array_filter($arr, function ($value) {
@@ -67,7 +76,10 @@ abstract class BaseManager
 		return $language;
 	}
 
-	protected function getUserDataSections(User $user, ?string $returnUrl, ?string $templateId): array
+	/**
+	 * @return array{array<string, string>, array<string, string>, array<string, string>}
+	 */
+	protected function getUserDataSections(User $user, ?string $returnUrl, ?string $templateId, bool $keepValues = true): array
 	{
 		$data1 = [
 			'ID_template' => $this->encodeString($templateId),
@@ -100,9 +112,17 @@ abstract class BaseManager
 			$data3['custom'.$fieldNumber] = $this->encodeString($value);
 		}
 
-		$data1 = $this->filterNullsFromArray($data1);
-		$data2 = $this->filterNullsFromArray($data2);
-		$data3 = $this->filterNullsFromArray($data3);
+		if ($keepValues) {
+			$data1 = $this->filterNullsFromArray($data1);
+			$data2 = $this->filterNullsFromArray($data2);
+			$data3 = $this->filterNullsFromArray($data3);
+		} else {
+			// Send empty base64 for null fields so the API clears them
+			$empty = base64_encode('');
+			$data1 = array_map(fn($v) => $v ?? $empty, $data1);
+			$data2 = array_map(fn($v) => $v ?? $empty, $data2);
+			$data3 = array_map(fn($v) => $v ?? $empty, $data3);
+		}
 
 		return [$data1, $data2, $data3];
 	}

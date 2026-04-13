@@ -52,7 +52,7 @@ abstract class ErrorRpcResponse implements IRpcResponse
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 * @throws InvalidDataTypeException
 	 */
 	public function getArrayValue(): array
@@ -88,7 +88,7 @@ abstract class ErrorRpcResponse implements IRpcResponse
 	}
 
 	/**
-	 * @return array
+	 * @return array<mixed>
 	 * @throws InvalidDataTypeException
 	 */
 	public function getArrayData(): array

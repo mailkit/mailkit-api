@@ -302,12 +302,12 @@ class UsersManager extends BaseManager
 		?int $mailingListId,
 		bool $keepValues
 	): bool {
-		[$personal, $address, $custom] = $this->getUserDataSections($user, null, null);
-		unset($personal['email']);
+		[$personal, $address, $custom] = $this->getUserDataSections($user, null, null, $keepValues);
+		unset($personal['email'], $personal['ID_template'], $personal['return_url']);
 
 		$params = [
 			'ID_user_list' => $mailingListId ?? $user->getMailingListId(),
-			'ID_email' => $user->getEmail(),
+			'ID_email' => $user->getId() ?? $user->getEmail(),
 			'personal' => $personal,
 			'address' => $address,
 			'custom' => $custom,
@@ -345,6 +345,9 @@ class UsersManager extends BaseManager
 		$message = trim($value['error'] ?? '');
 
 		if ($message === 'OK') {
+			if (isset($value['ID_email']) && is_numeric($value['ID_email'])) {
+				$user->setId((int)$value['ID_email']);
+			}
 			return true;
 		}
 

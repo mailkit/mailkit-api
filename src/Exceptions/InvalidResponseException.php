@@ -17,4 +17,9 @@ class InvalidResponseException extends \RuntimeException implements MailkitApiEx
 
 		$this->response = $response;
 	}
+
+	public function getResponse(): IRpcResponse
+	{
+		return $this->response;
+	}
 }

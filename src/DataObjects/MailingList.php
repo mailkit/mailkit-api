@@ -5,7 +5,7 @@ namespace Igloonet\MailkitApi\DataObjects;
 
 use Igloonet\MailkitApi\DataObjects\Enums\MailingListStatus;
 
-class MailingList
+final class MailingList
 {
 	/** @var int|null */
 	private $id = null;

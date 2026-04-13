@@ -9,8 +9,8 @@ interface IAdapter
 {
 	/**
 	 * @param string $method
-	 * @param array $params
-	 * @param array $possibleErrors
+	 * @param array<string, mixed> $params
+	 * @param array<string> $possibleErrors
 	 * @return IRpcResponse
 	 */
 	public function sendRequest(string $method, array $params, array $possibleErrors): IRpcResponse;

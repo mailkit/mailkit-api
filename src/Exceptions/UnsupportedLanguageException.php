@@ -20,4 +20,9 @@ class UnsupportedLanguageException extends InvalidArgumentException
 
 		parent::__construct($message, $code, $previous);
 	}
+
+	public function getLanguage(): string
+	{
+		return $this->language;
+	}
 }

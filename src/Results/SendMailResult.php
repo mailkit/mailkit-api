@@ -7,7 +7,7 @@ use Igloonet\MailkitApi\DataObjects\Enums\SendMailResultStatus;
 use Igloonet\MailkitApi\Exceptions\InvalidResponseException;
 use Igloonet\MailkitApi\RPC\Responses\IRpcResponse;
 
-class SendMailResult implements IApiMethodResult
+final class SendMailResult implements IApiMethodResult
 {
 	/** @var int|null */
 	private $emailId = null;

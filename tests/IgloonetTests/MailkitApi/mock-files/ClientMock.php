@@ -6,7 +6,7 @@ use Igloonet\MailkitApi\RPC\Responses\IRpcResponse;
 
 class ClientMock extends Client
 {
-	private $jsonAdapter = null;
+	private JsonAdapterMock $jsonAdapter;
 
 	public function __construct()
 	{
@@ -14,6 +14,10 @@ class ClientMock extends Client
 		$this->jsonAdapter = new JsonAdapterMock();
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @param array<string> $possibleErrors
+	 */
 	public function sendRpcRequest(string $method, array $params, array $possibleErrors): IRpcResponse
 	{
 		return $this->jsonAdapter->sendRequest($method, $params, $possibleErrors);

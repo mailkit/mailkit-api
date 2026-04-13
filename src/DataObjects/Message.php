@@ -16,7 +16,7 @@ class Message
 	/** @var string|null */
 	private $body = null;
 
-	/** @var array */
+	/** @var array<string, mixed> */
 	private $templateVars = [];
 
 	/** @var array|Attachment[] */
@@ -85,7 +85,7 @@ class Message
 	}
 
 	/**
-	 * @param array $templateVars
+	 * @param array<string, mixed> $templateVars
 	 * @return $this
 	 */
 	public function setTemplateVars(array $templateVars): self
@@ -108,7 +108,7 @@ class Message
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function getTemplateVars(): array
 	{

@@ -5,7 +5,7 @@ namespace Igloonet\MailkitApi\DataObjects;
 
 use Igloonet\MailkitApi\DataObjects\Enums\UnsubscribeMethod;
 
-class UnsubscribeWebHook
+final class UnsubscribeWebHook
 {
 	/** @var User|null */
 	private $user = null;
@@ -52,18 +52,17 @@ class UnsubscribeWebHook
 	/** @var string|null */
 	private $unsubscribeNote = null;
 
-	/** $jsonContent */
-	private $jsonContent = null;
-
-	private function __construct(array $jsonContent, User $user) {
-		$this->jsonContent = $jsonContent;
+	private function __construct(User $user) {
 		$this->user = $user;
 	}
 
-	public static function fromArray($jsonContent)
+	/**
+	 * @param array<string, mixed> $jsonContent
+	 */
+	public static function fromArray(array $jsonContent): self
 	{
 		$user = self::createUser($jsonContent);
-		$subscribe = new static($jsonContent, $user);
+		$subscribe = new self($user);
 
 		$subscribe->user = $user;
 		$subscribe->emailId = self::validateEmptyString($jsonContent['ID_EMAIL']);
@@ -159,12 +158,12 @@ class UnsubscribeWebHook
 		return $this->unsubscribeNote;
 	}
 
-	private static function validateEmptyString($string)
+	private static function validateEmptyString(mixed $string): ?string
 	{
 		return trim($string ?? '') === '' ? null : trim($string);
 	}
 
-	private static function validateIp($ipAddress)
+	private static function validateIp(mixed $ipAddress): ?string
 	{
 		if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
 			return $ipAddress;
@@ -173,6 +172,7 @@ class UnsubscribeWebHook
 		return null;
 	}
 
+	/** @param array<string, mixed> $jsonContent */
 	private static function createUser(array $jsonContent): User
 	{
 		$user = new User($jsonContent['EMAIL']);

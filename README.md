@@ -11,7 +11,7 @@ Igloonet/MailkitApi
 Requirements
 ------------
 
-Igloonet/MailkitApi requires PHP 7.1 or higher.
+Igloonet/MailkitApi requires PHP 8.1 or higher.
 
 Installation
 ------------

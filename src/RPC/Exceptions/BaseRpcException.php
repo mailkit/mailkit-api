@@ -10,9 +10,12 @@ abstract class BaseRpcException extends \RuntimeException implements RpcExceptio
 	/** @var string */
 	protected $method = null;
 
-	/** @var mixed */
+	/** @var array<string, mixed> */
 	protected $requestData = null;
 
+	/**
+	 * @param array<string, mixed> $requestData
+	 */
 	public function __construct(
 		string $method,
 		array $requestData,
@@ -39,9 +42,9 @@ abstract class BaseRpcException extends \RuntimeException implements RpcExceptio
 	}
 
 	/**
-	 * @return mixed
+	 * @return array<string, mixed>
 	 */
-	public function getRequestData()
+	public function getRequestData(): array
 	{
 		return $this->requestData;
 	}

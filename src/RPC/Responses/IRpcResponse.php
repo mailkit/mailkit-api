@@ -16,6 +16,7 @@ interface IRpcResponse
 
 	public function getError(): ?string;
 
+	/** @return array<string, mixed> */
 	public function getArrayValue(): array;
 
 	public function getStringValue(): string;
@@ -24,6 +25,7 @@ interface IRpcResponse
 
 	public function getBooleanValue(): bool;
 
+	/** @return array<mixed> */
 	public function getArrayData(): array;
 
 	public function getStringData(): string;

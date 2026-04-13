@@ -75,7 +75,7 @@ class User
 	/** @var int|null */
 	private $mailingListId = null;
 
-	/** @var array|string[] */
+	/** @var array<int, string|null> */
 	private $customFields = [];
 
 	public function __construct(?string $email = null)
@@ -526,7 +526,7 @@ class User
 	}
 
 	/**
-	 * @param array $customFields
+	 * @param array<int, string|null> $customFields
 	 * @return $this
 	 * @throws InvalidCustomFieldNumberException
 	 */

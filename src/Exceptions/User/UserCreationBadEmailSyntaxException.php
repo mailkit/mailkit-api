@@ -22,4 +22,9 @@ class UserCreationBadEmailSyntaxException extends UserCreationException
 
 		parent::__construct($rpcResponse, $message, $code, $previous);
 	}
+
+	public function getEmailAddress(): string
+	{
+		return $this->emailAddress;
+	}
 }

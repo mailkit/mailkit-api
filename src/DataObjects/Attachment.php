@@ -7,7 +7,7 @@ use Igloonet\MailkitApi\Exceptions\Message\AttachmentEmptyContentException;
 use Igloonet\MailkitApi\Exceptions\Message\AttachmentFileNotFoundException;
 use Igloonet\MailkitApi\Exceptions\Message\AttachmentFileNotReadableException;
 
-class Attachment
+final class Attachment
 {
 	/** @var string */
 	private $name = null;
@@ -23,10 +23,7 @@ class Attachment
 		$this->name = $name;
 	}
 
-	/**
-	 * @return string|null
-	 */
-	public function getName(): ?string
+	public function getName(): string
 	{
 		return $this->name;
 	}

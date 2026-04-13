@@ -6,35 +6,18 @@ namespace Igloonet\MailkitApi\Managers;
 use Igloonet\MailkitApi\DataObjects\SubscribeWebHook;
 use Igloonet\MailkitApi\DataObjects\UnsubscribeWebHook;
 use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 
 class WebHooksManager
 {
-	public function processSubscribe($content)
+	public function processSubscribe(string $content): SubscribeWebHook
 	{
-		try {
-			$responseData = Json::decode($content, Json::FORCE_ARRAY);
-			$subscribe = SubscribeWebHook::fromArray($responseData);
-
-			return $subscribe;
-		} catch (JsonException $e) {
-			throw $e;
-		}
-
-		return null;
+		$responseData = Json::decode($content, Json::FORCE_ARRAY);
+		return SubscribeWebHook::fromArray($responseData);
 	}
 
-	public function processUnsubscribe($content)
+	public function processUnsubscribe(string $content): UnsubscribeWebHook
 	{
-		try {
-			$responseData = Json::decode($content, Json::FORCE_ARRAY);
-			$unsubscribe = UnsubscribeWebHook::fromArray($responseData);
-
-			return $unsubscribe;
-		} catch (JsonException $e) {
-			throw $e;
-		}
-
-		return null;
+		$responseData = Json::decode($content, Json::FORCE_ARRAY);
+		return UnsubscribeWebHook::fromArray($responseData);
 	}
 }
