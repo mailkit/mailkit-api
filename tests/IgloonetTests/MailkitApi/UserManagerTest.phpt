@@ -5,6 +5,7 @@ namespace IgloonetTests\MailkitApi;
 use Igloonet\MailkitApi\DataObjects\Enums\UserStatus;
 use Igloonet\MailkitApi\DataObjects\User;
 use Igloonet\MailkitApi\Managers\UsersManager;
+use Nette\Utils\Json;
 use Tester\Assert;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -129,6 +130,55 @@ class UserManagerTest extends MailkitTestCase
 		Assert::exception(function() use ($user){
 			$this->userManager->addUser($user, 54321, true);;
 		}, \Igloonet\MailkitApi\Exceptions\User\UserCreationInvalidMailingListIdException::class);
+	}
+
+	public function testAddUserOmitsEmptyAddressAndCustomSections()
+	{
+		$user = new User('example@example.cz');
+		$this->userManager->addUser($user, 12345, true);
+
+		$params = $this->client->getJsonAdapter()->lastParams;
+		Assert::type('array', $params);
+		Assert::true(array_key_exists('personal', $params));
+		Assert::false(array_key_exists('address', $params));
+		Assert::false(array_key_exists('custom', $params));
+
+		// JSON-level guarantee: no `"address":[]` or `"custom":[]` in the wire payload.
+		$json = Json::encode($params);
+		Assert::notContains('"address":[]', $json);
+		Assert::notContains('"custom":[]', $json);
+	}
+
+	public function testAddUserEncodesPopulatedSectionsAsJsonObjects()
+	{
+		$user = new User('example@example.cz');
+		$user->setStreet('Ulice');
+		$user->setCustomField(1, 'foo');
+		$this->userManager->addUser($user, 12345, true);
+
+		$params = $this->client->getJsonAdapter()->lastParams;
+		Assert::type('array', $params);
+		Assert::true(array_key_exists('address', $params));
+		Assert::true(array_key_exists('custom', $params));
+
+		$json = Json::encode($params);
+		Assert::contains('"address":{', $json);
+		Assert::contains('"custom":{', $json);
+	}
+
+	public function testEditUserOmitsEmptyAddressAndCustomSections()
+	{
+		$user = new User('new@email.cz');
+		$this->userManager->editUser($user, 12345, true);
+
+		$params = $this->client->getJsonAdapter()->lastParams;
+		Assert::type('array', $params);
+		Assert::false(array_key_exists('address', $params));
+		Assert::false(array_key_exists('custom', $params));
+
+		$json = Json::encode($params);
+		Assert::notContains('"address":[]', $json);
+		Assert::notContains('"custom":[]', $json);
 	}
 }
 

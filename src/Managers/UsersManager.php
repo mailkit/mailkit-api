@@ -250,9 +250,13 @@ class UsersManager extends BaseManager
 			'ID_user_list' => $mailingListId ?? $user->getMailingListId(),
 			'confirm' => $this->getBooleanString($doubleOptIn),
 			'personal' => $personal,
-			'address' => $address,
-			'custom' => $custom,
 		];
+		if ($address !== []) {
+			$params['address'] = $address;
+		}
+		if ($custom !== []) {
+			$params['custom'] = $custom;
+		}
 
 		$possibleErrors = [
 			'Missing email',
@@ -308,10 +312,16 @@ class UsersManager extends BaseManager
 		$params = [
 			'ID_user_list' => $mailingListId ?? $user->getMailingListId(),
 			'ID_email' => $user->getId() ?? $user->getEmail(),
-			'personal' => $personal,
-			'address' => $address,
-			'custom' => $custom,
 		];
+		if ($personal !== []) {
+			$params['personal'] = $personal;
+		}
+		if ($address !== []) {
+			$params['address'] = $address;
+		}
+		if ($custom !== []) {
+			$params['custom'] = $custom;
+		}
 
 		$possibleErrors = [
 			'Missing ID_email',

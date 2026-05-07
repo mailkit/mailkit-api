@@ -6,6 +6,11 @@ use Igloonet\MailkitApi\RPC\Adapters\JsonAdapter;
 
 class JsonAdapterMock extends JsonAdapter
 {
+	public ?string $lastMethod = null;
+
+	/** @var array<string, mixed>|null */
+	public ?array $lastParams = null;
+
 	public function __construct()
 	{
 		parent::__construct('clientId', 'clientMd5');
@@ -17,6 +22,9 @@ class JsonAdapterMock extends JsonAdapter
 	 */
 	protected function getContent(string $method, array $params): array
 	{
+		$this->lastMethod = $method;
+		$this->lastParams = $params;
+
 		$requestData = ['function' => $method, 'parameters' => $params];
 
 		foreach (['email_id', 'ID_user_list', 'mailinglist_id', 'name', 'ID_email'] as $key) {

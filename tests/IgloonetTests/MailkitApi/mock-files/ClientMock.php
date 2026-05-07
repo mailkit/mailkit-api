@@ -14,6 +14,11 @@ class ClientMock extends Client
 		$this->jsonAdapter = new JsonAdapterMock();
 	}
 
+	public function getJsonAdapter(): JsonAdapterMock
+	{
+		return $this->jsonAdapter;
+	}
+
 	/**
 	 * @param array<string, mixed> $params
 	 * @param array<string> $possibleErrors

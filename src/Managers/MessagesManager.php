@@ -49,10 +49,16 @@ class MessagesManager extends BaseManager implements IMessageManager
 			'mailinglist_id' => $mailingListId ?? $message->getUser()->getMailingListId(),
 			'campaign_id' => $campaignId,
 			'main' => $main,
-			'recipient' => $personal,
-			'contact' => $address,
-			'custom' => $custom,
 		];
+		if ($personal !== []) {
+			$params['recipient'] = $personal;
+		}
+		if ($address !== []) {
+			$params['contact'] = $address;
+		}
+		if ($custom !== []) {
+			$params['custom'] = $custom;
+		}
 
 		$attachments = $message->getAttachments();
 		if (count($attachments) === 1) {
