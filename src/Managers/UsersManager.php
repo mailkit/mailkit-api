@@ -40,7 +40,7 @@ class UsersManager extends BaseManager
 	 */
 	public function getUsersByEmailAddress(string $emailAddress): array
 	{
-		return $this->getUsers($emailAddress);
+		return $this->getUsers($emailAddress, 'email');
 	}
 
 	/**
@@ -48,7 +48,7 @@ class UsersManager extends BaseManager
 	 */
 	public function getUserByEmailId(int $emailId): ?User
 	{
-		$userData = $this->getUsers((string)$emailId);
+		$userData = $this->getUsers((string)$emailId, 'ID_email');
 
 		if (count($userData) > 1) {
 			throw new TooManyStatusResultsException(
@@ -68,10 +68,10 @@ class UsersManager extends BaseManager
 	 * @return array|User[]
 	 * @throws UserStatusReceiveException
 	 */
-	private function getUsers(string $emailId): array
+	private function getUsers(string $value, string $paramName): array
 	{
 		$params = [
-			'email_id' => $emailId
+			$paramName => $value
 		];
 		$possibleErrors = [
 			'',

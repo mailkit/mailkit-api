@@ -27,7 +27,7 @@ class JsonAdapterMock extends JsonAdapter
 
 		$requestData = ['function' => $method, 'parameters' => $params];
 
-		foreach (['email_id', 'ID_user_list', 'mailinglist_id', 'name', 'ID_email'] as $key) {
+		foreach (['ID_user_list', 'mailinglist_id', 'email', 'ID_email', 'name'] as $key) {
 			if (isset($params[$key])) {
 				$suffix = (string)$params[$key];
 				$file = __DIR__ . '/api-data/json/' . $method . '.' . $suffix . '.json';
